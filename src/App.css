@@ -1,0 +1,21 @@
+/* body {
+  margin: 0;
+  font-family: "Roboto", sans-serif;
+} */
+
+/* App.css */
+.calendar-container {
+  height: 500px;
+  width: 800px;
+  padding: 10px;
+}
+
+.App {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: auto; /* Adjust the height based on your design */
+  padding: 50px;
+  /* Add other styles as needed */
+}
