@@ -8,13 +8,15 @@ const extractCalendarEvents = (groupedItems) => {
     const group = groupedItems[groupId];
     group.items.forEach((item) => {
       // Extract relevant data and format for events
-      const dateValue = item.column_values.find(col => col.title === 'Date').text;
-      const hoursSpentValue = item.column_values.find(col => col.title === 'Hours Spent').text;
+      const dateValue = item.column_values.find((col) => col.title === 'Date').text;
+      const hoursSpentValue = item.column_values.find((col) => col.title === 'Hours Spent').text;
+      const startTime = item.column_values.find((col) => col.title === 'Start Time').text;
+      const endTime = item.column_values.find((col) => col.title === 'End Time').text;
 
-      if (dateValue && hoursSpentValue) {
+      if (dateValue && hoursSpentValue && startTime && endTime) {
         const event = {
-          start: moment(dateValue).toDate(), // Corrected to use dateValue directly
-          end: moment(dateValue).add(1, 'hour').toDate(),
+          start: moment(`${dateValue} ${startTime}`, 'YYYY-MM-DD hh:mm A').toDate(),
+          end: moment(`${dateValue} ${endTime}`, 'YYYY-MM-DD hh:mm A').toDate(),
           title: `${hoursSpentValue} hours`, // Display only the hours spent
           // ... other event properties
         };

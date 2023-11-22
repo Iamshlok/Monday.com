@@ -16,6 +16,7 @@
   align-items: center;
   justify-content: center;
   height: auto; /* Adjust the height based on your design */
-  padding: 50px;
+  padding: 200px;
+  padding-top: 100px;
   /* Add other styles as needed */
 }

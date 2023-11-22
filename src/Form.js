@@ -16,6 +16,7 @@ class Form extends Component {
       showPopup: false,
       popupMessage: '',
       popupType: 'success',
+      edit: false, // Set edit to true or false based on your requirement
       ...props,
     };
   }
@@ -63,6 +64,8 @@ class Form extends Component {
     const selectedBoardItems = this.state[column.id].items;
     const selectedItem = selectedBoardItems.find(item => item.id === selectedItemId);
 
+    // Populate Manager field based on the selected board-relation option
+    const managerValue = selectedItem ? selectedItem.person : '';
     this.setState((prevState) => ({
       ...prevState,
       [column.id]: {
@@ -70,6 +73,9 @@ class Form extends Component {
         selectedItem,
         items: prevState[column.id].items,
       },
+      // Populate Manager field
+      managerFieldId: managerValue,
+      managerFieldName: managerValue,
     }));
   };
 
@@ -92,6 +98,11 @@ class Form extends Component {
                     id
                     title
                   }
+                  column_values {
+                    id
+                    title
+                    text
+                  }
                 }
               }
             }
@@ -102,7 +113,15 @@ class Form extends Component {
       const data = await response.json();
 
       if (data.data && data.data.boards && data.data.boards.length > 0) {
-        return data.data.boards[0].items.filter(item => item.group.title === 'On Going Projects');
+        return data.data.boards[0].items.map(item => {
+          const managerColumn = item.column_values.find(column => column.title === 'Person');
+          return {
+            id: item.id,
+            name: item.name,
+            group: item.group,
+            manager: managerColumn ? managerColumn.text : '',
+          };
+        }).filter(item => item.group.title === 'On Going Projects');
       }
 
       return [];
@@ -133,7 +152,7 @@ class Form extends Component {
   handleSubmit = async (e) => {
     e.preventDefault();
     const { boardId, groupId, columns, ...values } = this.state;
-  
+
     const columnValues = {};
     columns.forEach((column) => {
       const columnId = column.id;
@@ -148,10 +167,16 @@ class Form extends Component {
         }
       }
     });
-  
+
+    const columnData = columns.map((column) => ({
+      id: column.id,
+      value: this.state[column.id],
+      type: column.type,
+    }));
+    
     try {
-      const newItem = await createItem(boardId, groupId, columnValues);
-  
+      const newItem = await createItem(boardId, groupId, columnData);
+
       if (newItem) {
         this.setState({
           successMessage: 'Item created successfully',
@@ -184,20 +209,30 @@ class Form extends Component {
       });
     }
   }
-    
 
   render() {
-    const { columns, successMessage, errorMessage, showPopup, popupMessage, popupType } = this.state;
+    const { columns, successMessage, errorMessage, showPopup, popupMessage, popupType, edit } = this.state;
 
+    // Filter out columns with titles "Subitems" and "Approval Matrix"
+    const filteredColumns = columns.filter(column => column.title !== "Subitems" && column.title !== "Approval Matrix" && column.title !== "Person");
+
+    // Inside the render method
     return (
       <div className="form-container">
         <h1>Time Entry Form</h1>
         <form onSubmit={this.handleSubmit}>
           <div className="form-row">
-            {columns.map((column, index) => (
+            {filteredColumns.map((column, index) => (
               <div key={column.id} className="form-input">
                 <label>{column.title}</label>
-                {column.type === 'board-relation' ? (
+                {column.title === "Manager" && !edit ? ( // Check if it's the "Manager" field and edit is false
+                  <input
+                    type={column.type === 'lookup' ? 'text' : column.type}
+                    name={column.title}
+                    value={this.state[column.id] || ''}
+                    //disabled // Make the input disabled
+                  />
+                ) : column.type === 'board-relation' ? (
                   <select
                     name={column.title}
                     value={this.state[column.id] ? this.state[column.id].selectedItemId : ''}
