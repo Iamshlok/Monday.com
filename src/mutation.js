@@ -1,5 +1,5 @@
 export async function createItem(boardId, groupId, columnData) {
-  // Filter out columns with null or empty values
+  // Filter out columns with null values
   const filteredColumnData = columnData.filter(({ value }) => value !== null && value !== '');
 
   // Construct the mutation query dynamically
@@ -7,16 +7,12 @@ export async function createItem(boardId, groupId, columnData) {
 
   const columnValues = filteredColumnData
     .map(({ id, value, type }) => {
-      if (type === 'board-relation') {
-        // Exclude the board-relation column if the value is empty
-        return value && value.selectedItemId
-          ? `"${id}": { "linkedPulseId": "${value.selectedItemId}"}`
-          : null;
+      if (type === 'board-relation' && typeof value === 'object' && value !== null) {
+        return `\\\"${id}\\\":{\\\"linkedPulseId\\\":\\\"${value.selectedItemId}\\\"}`;
       } else {
-        return `"${id}": "${value}"`;
+        return `\\\"${id}\\\": \\\"${value}\\\"`;
       }
     })
-    .filter(Boolean) // Remove null values from the array
     .join(', ');
 
   const query = `mutation {
@@ -24,7 +20,7 @@ export async function createItem(boardId, groupId, columnData) {
       board_id: ${boardId},
       group_id: "${groupId}",
       item_name: "${itemName.replace(/"/g, '\\"')}",
-      column_values: {${columnValues}}
+      column_values: "{${columnValues}}"
     ) {
       id
     }
