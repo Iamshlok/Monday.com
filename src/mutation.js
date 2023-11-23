@@ -8,7 +8,7 @@ export async function createItem(boardId, groupId, columnData) {
   const columnValues = filteredColumnData
     .map(({ id, value, type }) => {
       if (type === 'board-relation' && typeof value === 'object' && value !== null) {
-        return `\\\"${id}\\\":{\\\"linkedPulseId\\\":\\\"${value.selectedItemId}\\\"}`;
+        return `\\\"${id}\\\":{\\\"linkedPulseIds\\\":[{\\\"linkedPulseId\\\"${value.selectedItemId}\\\"}]}`;
       } else {
         return `\\\"${id}\\\": \\\"${value}\\\"`;
       }
