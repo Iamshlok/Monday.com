@@ -2,9 +2,9 @@
   "name": "monday-react-quickstart-app",
   "version": "0.0.1",
   "private": true,
+  "homepage": "https://timeentryform.com",
   "scripts": {
     "start": "npm run server",
-    "homepage": "http://23.254.129.246/Time_Tracking/build",
     "build": "react-scripts build",
     "server": "react-scripts start",
     "test": "react-scripts test",
@@ -13,7 +13,7 @@
   },
   "dependencies": {
     "moment": "^2.29.4",
-    "monday-sdk-js": "^0.1.4",
+    "monday-sdk-js": "^0.1.6",
     "monday-ui-react-core": "^1.54.0",
     "react-big-calendar": "^1.8.5"
   },

@@ -18,5 +18,17 @@
   height: auto; /* Adjust the height based on your design */
   padding: 200px;
   padding-top: 100px;
-  /* Add other styles as needed */
+}
+.FormContainer {
+  background-color: white; /* Set the background color for the Form component */
+  margin-bottom: 20px;
+  padding-bottom: 20px;
+}
+
+.CalendarContainer {
+  background-color: white; /* Set the background color for the calendar container */
+}
+
+.MyCalendar {
+  background-color: white; /* Set the background color for the MyCalendar component */
 }
