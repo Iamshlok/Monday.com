@@ -1,42 +1,70 @@
 import moment from 'moment';
+import { curUserID } from '../../API Call/mondaysdk';
 
 const extractCalendarEvents = (groupedItems) => {
   const events = [];
 
+
   for (const groupId in groupedItems) {
-    const group = groupedItems[groupId];
-    group.items.forEach((item) => {
-      const dateValue = item.column_values.find((col) => col.title === 'Date').text;
-      const hoursSpentValue = item.column_values.find((col) => col.title === 'Hours Spent').text;
-      const startTime = item.column_values.find((col) => col.title === 'Start Time').text;
-      const endTime = item.column_values.find((col) => col.title === 'End Time').text;
-      // const status = item.column_values.find((col) => col.title === 'Status').text.toLowerCase();
-      const isAllDay = item.column_values.find((col) => col.title === 'IsAllDay').text.toLowerCase() === 'v';
+    if (groupedItems.hasOwnProperty(groupId)) {
+      const group = groupedItems[groupId];
 
-      if (dateValue && hoursSpentValue) {
-        let eventStart, eventEnd;
+      if (group.items && Array.isArray(group.items)) {
+        group.items.forEach((item) => {
+          // Find the 'person' column
+          const assignedToColumn = item.column_values.find((col) => col.id === 'person');
 
-        if (isAllDay) {
-          // Set start and end times for the entire day
-          eventStart = moment(dateValue).startOf('day').toDate();
-          eventEnd = moment(dateValue).endOf('day').toDate();
-        } else {
-          // Set start and end times using provided values
-          eventStart = moment(`${dateValue} ${startTime}`, 'YYYY-MM-DD hh:mm A').toDate();
-          eventEnd = moment(`${dateValue} ${endTime}`, 'YYYY-MM-DD hh:mm A').toDate();
-        }
+          // Extract the 'id' from the 'personsAndTeams' field
+          const assignedTo = assignedToColumn?.value;
+          let personId;
 
-        const event = {
-          start: eventStart,
-          end: eventEnd,
-          title: `${hoursSpentValue} hours`,
-          allDay: isAllDay,
-          // ... other event properties
-        };
+          try {
+            const assignedToObj = assignedTo ? JSON.parse(assignedTo) : null;
+            personId = assignedToObj?.personsAndTeams?.[0]?.id;
+          } catch (error) {
+            console.error(`Error parsing JSON in 'person' column: ${error}`);
+            // Handle the error, e.g., set personId to a default value or skip this item
+          }
 
-        events.push(event);
+          if (personId === curUserID) {
+            const itemId = item.id;
+            const dateValue = item.column_values.find((col) => col.title === 'Start Date')?.text;
+            const endDateValue = item.column_values.find((col) => col.title === 'End Date')?.text;
+            const hoursSpentValue = item.column_values.find((col) => col.title === 'Hours Spent')?.text;
+            const startTime = item.column_values.find((col) => col.title === 'Start Time')?.text;
+            const endTime = item.column_values.find((col) => col.title === 'End Time')?.text;
+            const isAllDay = item.column_values.find((col) => col.id === 'check')?.text.toLowerCase() === 'v';
+            const status = item.column_values.find((col) => col.title === 'Status')?.text;
+            const title = item.name;
+
+            if (dateValue && hoursSpentValue) {
+              let eventStart, eventEnd;
+
+              if (isAllDay) {
+                eventStart = moment(dateValue).startOf('day').toDate();
+                eventEnd = moment(endDateValue).endOf('day').toDate();
+              } else {
+                eventStart = moment(`${dateValue} ${startTime}`, 'YYYY-MM-DD hh:mm A').toDate();
+                eventEnd = moment(`${endDateValue} ${endTime}`, 'YYYY-MM-DD hh:mm A').toDate();
+              }
+              
+              const event = {
+                start: eventStart,
+                end: eventEnd,
+                title: `${hoursSpentValue} hours, ${title}`,
+                allDay: isAllDay,
+                status, // Include status in the event object
+                resource: itemId,
+              };
+
+              events.push(event);
+            }
+          }
+        });
+      } else {
+        console.error(`Items in group ${groupId} are not defined or not an array`);
       }
-    });
+    }
   }
 
   return events;

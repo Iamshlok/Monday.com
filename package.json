@@ -12,10 +12,18 @@
     "stop": "kill-port 8301 && kill-port 4049 && kill-port 4040"
   },
   "dependencies": {
+    "@fontsource/figtree": "^5.0.18",
+    "@fullcalendar/daygrid": "^6.1.10",
+    "@fullcalendar/react": "^6.1.10",
     "moment": "^2.29.4",
-    "monday-sdk-js": "^0.1.6",
+    "monday-sdk-js": "^0.5.2",
     "monday-ui-react-core": "^1.54.0",
-    "react-big-calendar": "^1.8.5"
+    "react-big-calendar": "^1.8.5",
+    "react-big-scheduler": "^0.2.7",
+    "react-calendar": "^4.6.1",
+    "react-calendar-timeline": "^0.28.0",
+    "react-router-dom": "^6.20.1",
+    "react-select": "^5.8.0"
   },
   "eslintConfig": {
     "extends": "react-app"
@@ -33,6 +41,8 @@
     ]
   },
   "devDependencies": {
+    "@event-calendar/core": "^2.4.1",
+    "@event-calendar/time-grid": "^2.4.1",
     "@mondaydotcomorg/tunnel": "^0.4.1",
     "concurrently": "^5.2.0",
     "cross-port-killer": "^1.2.1",

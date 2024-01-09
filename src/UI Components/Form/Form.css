@@ -1,17 +1,62 @@
 /* Form.css */
 
+
 /* Style the form container */
 .form-container {
   display: flex;
   flex-direction: column;
   align-items: center;
-  height: auto;
-  width: 600px; /* Increase the container width as needed */
-  margin: 0 auto;
+  width: 100%;
+  max-width: 600px; /* Set a max-width for responsiveness */
+  margin: 20px auto; /* Add some margin for spacing */
   padding: 20px;
-  border: 1px solid #ccc;
-  border-radius: 5px;
-  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  border: 1px solid #e0e0e0;
+  border-radius: 8px; /* Increase border-radius for a softer look */
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Adjust box-shadow for a subtle effect */
+  background-color: #fff; /* Set background color to white */
+  font-size: 16px; /* Adjust font size as needed */
+  color: #333; /* Adjust text color */
+}
+
+/* Add a transition effect on hover for interactivity */
+.form-container:hover {
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+}
+
+.form-input label {
+  display: block;
+  margin-bottom: 8px;
+  font-weight: bold;
+  font-size: 14px;
+  color: #333; /* Adjust text color */
+  font-family: "Figtree", sans-serif;
+}
+
+/* Style the checkbox container */
+.checkbox-container {
+  display: flex;
+  align-items: center;
+}
+
+/* Style the checkbox */
+.form-input input[type="checkbox"] {
+  width: 20px; /* Adjust width for the checkbox */
+  height: 20px; /* Adjust height for the checkbox */
+  margin-right: 8px;
+  cursor: pointer;
+}
+
+/* Add transition effect for smoother changes */
+.form-container,
+.form-container input,
+.form-container select,
+.form-container button {
+  transition: all 0.3s ease;
+}
+
+/* Apply the Circular font to the body or specific elements */
+body {
+  font-family: 'Circular', sans-serif;
 }
 
 /* Style the form rows for horizontal arrangement */
@@ -19,36 +64,67 @@
   display: flex;
   flex-wrap: wrap;
   justify-content: space-between;
+  
 }
 
 /* Style the form inputs */
+/* Form.css */
+
 .form-input {
-  width: calc(33.33% - 10px); /* Adjust width for horizontal alignment with spacing */
-  margin-bottom: 15px;
+  width: calc(30% - 10px); /* Adjust width for horizontal alignment with spacing */
+  margin-bottom: 20px; /* Increase margin for better spacing */
   display: flex;
   flex-direction: column;
   align-items: flex-start;
   overflow: visible;
 }
 
-.form-input label {
-  margin-bottom: 5px;
-  font-weight: bold;
+
+.form-input select {
+  width: 100%;
+  padding: 12px;
+  border: 1px solid #d8d8d8;
+  border-radius: 4px;
+  font-size: 16px;
+  box-sizing: border-box;
+  transition: border-color 0.3s ease;
+  appearance: none; /* Remove default styles on browsers that support this property */
+  background-color: white; /* Set background color */
+  background-image: url('data:image/svg+xml;utf8,<svg fill="%234caf50" height="24" viewBox="0 0 24 24" width="24" xmlns="http://www.w3.org/2000/svg"><path d="M7 10l5 5 5-5z"/><path d="M0 0h24v24H0z" fill="none"/></svg>'); /* Add a custom arrow icon */
+  background-repeat: no-repeat;
+  background-position: right 12px center;
+  cursor: pointer;
 }
 
-.form-input select{
-  width: 105.1%;
-  padding: 5px;
-  border: 1px solid #ccc;
-  border-radius: 3px;
+/* Style the select dropdown options */
+.form-input select option {
+  background-color: white; /* Background color for options */
+  color: #333; /* Text color for options */
+  padding: 12px;
   font-size: 16px;
 }
+
+/* Add a hover effect to the select dropdown options */
+.form-input select option:hover {
+  background-color: #f5f5f5; /* Hover background color */
+}
+
 .form-input input {
   width: 100%;
-  padding: 5px;
-  border: 1px solid #ccc;
-  border-radius: 3px;
+  padding: 12px; /* Increase padding for a more spacious feel */
+  border: 1px solid #d8d8d8; /* Light gray border */
+  border-radius: 4px;
   font-size: 16px;
+  box-sizing: border-box; /* Ensure padding and border are included in the total width */
+  transition: border-color 0.3s ease; /* Add a smooth transition effect on border color */
+}
+
+/* Add a focus state to the input fields */
+.form-input input:focus,
+.form-input select:focus {
+  outline: none; /* Remove default outline on focus */
+  border-color: #4caf50; /* Green border color on focus */
+  box-shadow: 0 0 5px rgba(76, 175, 80, 0.5); /* Add a subtle box shadow on focus */
 }
 
 /* Style the submit button */
@@ -65,6 +141,7 @@
   border-radius: 3px;
   font-size: 16px;
   cursor: pointer;
+  font-family: 'Circular', sans-serif;
 }
 
 .form-submit button:hover {
@@ -97,6 +174,7 @@
   text-align: center;
   z-index: 1000;
   border-radius: 4px;
+  font-family: 'Circular', sans-serif;
 }
 
 /* Styles for the success and error icons */
@@ -122,8 +200,10 @@ button {
   padding: 10px 20px;
   cursor: pointer;
   margin-top: 10px;
+  font-family: 'Circular', sans-serif;
 }
 
 button:hover {
   background: #0055aa; /* Darker blue on hover */
 }
+

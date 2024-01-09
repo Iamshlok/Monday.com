@@ -1,31 +1,62 @@
 // App.js
-
 import React, { useState } from 'react';
 import './App.css';
 import Form from './UI Components/Form/Form.js';
-import ApiCall from './API Call/getValues';
+import ApiCall from './API Call/getValues.js';
 import MyCalendar from './UI Components/Calendar/MyCalendar';
 import extractCalendarEvents from './UI Components/Calendar/CalendarEvents';
+import { board, isViewonly } from './API Call/mondaysdk.js';
+import PopupForm from './UI Components/Calendar/PopupForm.js';
 
 const App = () => {
-  const [selectedData, setSelectedData] = useState(null);
   const [calendarEvents, setCalendarEvents] = useState([]);
+  const [showPopup, setShowPopup] = useState(false);
+  const [selectedEvent, setSelectedEvent] = useState(null);
+  const [showRegularForm, setShowRegularForm] = useState(true);
 
-  const populateForm = (selectedData) => {
-    setSelectedData(selectedData);
+  if (isViewonly) {
+    return (
+      <div className="App">
+        <div>
+          <h2>You are a View only user, you don't have access to the current board view.</h2>
+        </div>
+      </div>
+    );
+  }
+
+  const handlePopupClose = () => {
+    setShowPopup(false);
+    setSelectedEvent(null); // Reset selectedEvent when closing the popup
+    setShowRegularForm(true);
   };
 
   return (
     <div className="App">
       <div className="FormContainer">
-        <Form title="Your Form Title" populateForm={populateForm} />
+        {showPopup ? (
+          <PopupForm
+            className="popup-form"
+            isOpen={showPopup}
+            onClose={handlePopupClose}
+            eventData={selectedEvent}
+          />
+        ) : (
+          showRegularForm && <Form setShowRegularForm={setShowRegularForm} />
+        )}
       </div>
       <div className="CalendarContainer">
-        <MyCalendar events={calendarEvents} />
+        <MyCalendar
+          events={calendarEvents}
+          showPopup={showPopup}
+          setSelectedEvent={setSelectedEvent}
+          setShowPopup={setShowPopup}
+          selectedEvent={selectedEvent}
+        />
       </div>
       <div>
         <ApiCall
-          render={(groupedItems, workspace, boardName) => {
+          board={board}
+          render={(groupedItems) => {
             const events = extractCalendarEvents(groupedItems);
             setCalendarEvents(events);
           }}

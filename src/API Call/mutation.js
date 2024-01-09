@@ -1,4 +1,6 @@
-import { apiKey } from '../ManageAuthAndBoard/keyandboardid';
+import mondaySdk from 'monday-sdk-js';
+
+const monday = mondaySdk();
 
 export async function createItem(boardId, groupId, columnData) {
   // Filter out columns with null values
@@ -32,7 +34,7 @@ export async function createItem(boardId, groupId, columnData) {
     })
     .join(', ');
 
-  const query = `mutation {
+  const mutationQuery = `mutation {
       create_item (
         board_id: ${boardId},
         group_id: "${groupId}",
@@ -44,23 +46,12 @@ export async function createItem(boardId, groupId, columnData) {
     }`;
 
   // Make the API request with the dynamic query
-  const response = await fetch("https://api.monday.com/v2", {
-    method: 'post',
-    headers: {
-      'Content-Type': 'application/json',
-      'Authorization': apiKey, // Replace with your API key
-    },
-    body: JSON.stringify({
-      'query': query,
-    }),
-  });
+  try {
+    const response = await monday.api(mutationQuery);
 
-  if (!response.ok) {
-    const responseData = await response.json();
-    console.log(responseData);
+    return response.data;
+  } catch (error) {
+    console.error('Failed to create item:', error);
     throw new Error('Failed to create item');
   }
-
-  const data = await response.json();
-  return data.data;
 }
