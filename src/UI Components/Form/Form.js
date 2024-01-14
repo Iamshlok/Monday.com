@@ -318,6 +318,7 @@ class Form extends Component {
 
     // Inside the render method
     return (
+
       <div className="form-container">
         <h2>Time Entry Form (User view)</h2>
         <h4>
@@ -330,6 +331,7 @@ class Form extends Component {
             </span>
           ))}
         </h4>
+
         <form onSubmit={this.handleSubmit}>
           <div className="form-row">
             {sortedColumns.map((column, index) => (
