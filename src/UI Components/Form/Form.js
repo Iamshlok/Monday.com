@@ -25,6 +25,8 @@ class Form extends Component {
       nameFieldId: '', // Add nameFieldId to the initial state
       subitemsField: [],
       boardRelationSelections: {},
+      text6: null,
+      text66: null,
       ...props,
     };
 
@@ -71,6 +73,8 @@ class Form extends Component {
       managerFieldId: managerValue,
       // Reset the name field when a new project is selected
       subitemsField: subitems,
+      // Update state for the "Selected Project" column (text6)
+      text6: selectedItemId, // Assuming text6 is of type "text"
     }));
   };
 
@@ -82,8 +86,26 @@ class Form extends Component {
     });
   };
 
-  handleInputChange = (e, column) => {
+  handleInputChange = (selectedOption, column) => {
+    // Assuming that the selectedOption contains the ID as value
+    const selectedId = selectedOption ? selectedOption.value : null;
+    const selectedOptionName = selectedOption ? selectedOption.label : null;
+    // Update state for the "Name" column
+    this.setState((prevState) => ({
+      ...prevState,
+      [column.id]: selectedOptionName,
+    }));
+  
+    // Update state for the "Selected Task" column (text66)
+    this.setState({
+      text66: selectedId,
+    });
+  }
+  
+
+  handleTextInputChange = (e, column) => {
     const { value } = e.target;
+  
     this.setState((prevState) => ({
       ...prevState,
       [column.id]: value,
@@ -107,8 +129,8 @@ class Form extends Component {
 
   handleHourChange = (e, column) => {
     const { value } = e.target;
-  
-    if (column.title === 'Spent Hours') {
+
+    if (column.title === 'Hours Spent') {
       this.setState({
         totalHours: value,
       });
@@ -117,33 +139,10 @@ class Form extends Component {
         ...prevState,
         [column.id]: value,
       }));
-  
-      // Calculate total hours when both "Start Time" and "End Time" are provided
-      const startTime = this.state['Start Time'] || ''; // Adjust the key based on your actual column title
-      const endTime = this.state['End Time'] || ''; // Adjust the key based on your actual column title
-  
-      // Check if both start and end times are provided
-      if (startTime && endTime) {
-        const moment = require('moment'); // Import moment.js
-        const format = 'HH:mm';
-        const startMoment = moment(startTime, format);
-        const endMoment = moment(endTime, format);
-  
-        if (startMoment.isValid() && endMoment.isValid()) {
-          const totalHours = endMoment.diff(startMoment, 'hours', true).toFixed(2);
-          this.setState({
-            totalHours,
-          });
-        } else {
-          // Handle invalid time inputs if needed
-          this.setState({
-            totalHours: '',
-          });
-        }
-      }
     }
   };
-  
+
+
 
   async componentDidMount() {
     try {
@@ -265,11 +264,11 @@ class Form extends Component {
         setTimeout(() => {
           this.setState({ successMessage: '' });
         }, 3000);
-        monday.execute("notice", { 
+        monday.execute("notice", {
           message: "Time entry created successfully.",
           type: "success", // or "error" (red), or "info" (blue)
           timeout: 10000,
-       });
+        });
       } else {
         this.setState({
           showPopup: true,
@@ -284,11 +283,11 @@ class Form extends Component {
         popupMessage: 'Error creating item',
         popupType: 'error',
       });
-      monday.execute("notice", { 
+      monday.execute("notice", {
         message: "Error creating time entry!!",
         type: "error", // or "error" (red), or "info" (blue)
         timeout: 10000,
-     });
+      });
     }
   };
 
@@ -298,7 +297,7 @@ class Form extends Component {
     const { columns, successMessage, errorMessage, showPopup, popupMessage, popupType } = this.state;
 
     // Filter out columns 
-    const filteredColumns = columns.filter(column => column.title !== "Subitems" && column.title !== "Person" && column.title !== "Status" && column.id !== "text6" && column.id !== "text66");
+    const filteredColumns = columns.filter(column => column.title !== "Subitems" && column.title !== "Person" && column.title !== "Status" && column.id !== "text6" && column.id !== "text66" && column.title !== "Selected Project" && column.title !=="Selected Task");
     const headerFilter = columns.filter(column => column.title === "Person" || column.title === "Status")
     // Specify the desired column order
     const desiredColumnOrder = ["Project", "Manager", "Name", "Start Date", "End Date", "Hours Spent", "All Day Task", "Start Time", "End Time"];
@@ -337,16 +336,17 @@ class Form extends Component {
                 <label>{column.type === 'name' ? 'Task' : column.title}</label>
                 {column.type === "name" ? (
                   <Select
-                    name={column.id}
-                    value={this.state[column.id] ? { value: this.state[column.id], label: this.state[column.id] } : null}
-                    onChange={(selectedOption) => this.handleInputChange({ target: { value: selectedOption.value } }, column)}
-                    options={[
-                      { value: '', label: 'Select a task' }, // Default option
-                      ...this.state.subitemsField.map((subitem) => ({ value: subitem.name, label: subitem.name }))
-                    ]}
-                    placeholder="Select a task"
-                    isSearchable={false}
-                  />
+                  name={column.id}
+                  value={this.state[column.id] ? { value: this.state[column.id], label: this.state[column.id] } : null}
+                  onChange={(selectedOption) => this.handleInputChange(selectedOption, column)}
+                  options={[
+                    { value: '', label: 'Select a name' }, // Default option
+                    ...this.state.subitemsField.map((subitem) => ({ value: subitem.id, label: subitem.name }))
+                  ]}
+                  placeholder="Select a name"
+                  isSearchable={false}
+                />
+                
                 ) : column.title === "Manager" ? (
                   <input
                     type={column.type === 'text'}
@@ -390,16 +390,17 @@ class Form extends Component {
                     <input
                       type={column.type === 'hour' ? 'text' : column.type}
                       name={column.title}
-                      value={this.state.totalHours || ''}
-                      onChange={(e) => this.handleHourChange(e, column)}
+                      value={this.state[column.id] || ''}
+                      onChange={(e) => this.handleTextInputChange(e, column)}
                     />
+
                   </div>
                 ) : (
                   <input
                     type={column.type === 'color' ? 'text' : column.type}
                     name={column.title}
                     value={this.state[column.id] || ''}
-                    onChange={(e) => this.handleInputChange(e, column)}
+                    onChange={(e) => this.handleTextInputChange(e, column)}
                   />
                 )}
               </div>

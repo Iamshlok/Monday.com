@@ -7,8 +7,6 @@ const monday = mondaySdk();
 
 const ApiCall = ({ render }) => {
   const [groupedItems, setGroupedItems] = useState([]);
-  const [workspace, setWorkspace] = useState('');
-  const [boardName, setBoardName] = useState('');
 
   useEffect(() => {
     // Fetch data from the Monday.com board
@@ -16,43 +14,45 @@ const ApiCall = ({ render }) => {
       try {
         await initializeMondaySdk();
         const response = await monday.api(
-          `query {
-            boards(ids: ${board}) {
-              name 
-              workspace {
-                id 
+          `query{
+            boards(ids: ${board}){
+              name
+              workspace{
+                id
                 name
-              } 
-              items{
-                id 
-                name 
-                group{
-                  id 
-                  title
-                } 
-                column_values{
-                  id 
-                  title 
-                  text 
-                  value 
-                  type
+              }
+              items_page (limit:500){
+                cursor
+                items{
+                  id
+                  name
+                  group{
+                    id
+                    title
+                  }
+                  column_values{
+                    id
+                    text
+                    type
+                    value
+                    column{
+                      id
+                      title
+                    }
+                  }
                 }
               }
             }
-          }`
+          }`,{apiVersion: '2023-10'}
         );
 
-        const boardData = response.data.boards[0]; // Access the first board in the response
-
-        const workspaceName = boardData.workspace.name;
-        const boardName = boardData.name;
+        const boardData = response.data.boards[0].items_page; // Access the first board in the response
+        console.log(boardData);
 
         // Process the data to create groupedItems
         const groupedItems = processGroupedItems(boardData.items);
 
         setGroupedItems(groupedItems);
-        setWorkspace(workspaceName);
-        setBoardName(boardName);
       } catch (error) {
         console.error('Error fetching data from Monday.com:', error);
       }

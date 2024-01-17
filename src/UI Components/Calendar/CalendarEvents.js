@@ -12,7 +12,7 @@ const extractCalendarEvents = (groupedItems) => {
       if (group.items && Array.isArray(group.items)) {
         group.items.forEach((item) => {
           // Find the 'person' column
-          const assignedToColumn = item.column_values.find((col) => col.id === 'person');
+          const assignedToColumn = item.column_values.find((col) => col.column.id === 'person');
 
           // Extract the 'id' from the 'personsAndTeams' field
           const assignedTo = assignedToColumn?.value;
@@ -28,13 +28,13 @@ const extractCalendarEvents = (groupedItems) => {
 
           if (personId === curUserID) {
             const itemId = item.id;
-            const dateValue = item.column_values.find((col) => col.title === 'Start Date')?.text;
-            const endDateValue = item.column_values.find((col) => col.title === 'End Date')?.text;
-            const hoursSpentValue = item.column_values.find((col) => col.title === 'Hours Spent')?.text;
-            const startTime = item.column_values.find((col) => col.title === 'Start Time')?.text;
-            const endTime = item.column_values.find((col) => col.title === 'End Time')?.text;
-            const isAllDay = item.column_values.find((col) => col.id === 'check')?.text.toLowerCase() === 'v';
-            const status = item.column_values.find((col) => col.title === 'Status')?.text;
+            const dateValue = item.column_values.find((col) => col.column.title === 'Start Date')?.text;
+            const endDateValue = item.column_values.find((col) => col.column.title === 'End Date')?.text;
+            const hoursSpentValue = item.column_values.find((col) => col.column.title === 'Hours Spent')?.text;
+            const startTime = item.column_values.find((col) => col.column.title === 'Start Time')?.text;
+            const endTime = item.column_values.find((col) => col.column.title === 'End Time')?.text;
+            const isAllDay = item.column_values.find((col) => col.column.id === 'check')?.text.toLowerCase() === 'v';
+            const status = item.column_values.find((col) => col.column.title === 'Status')?.text;
             const title = item.name;
 
             if (dateValue && hoursSpentValue) {

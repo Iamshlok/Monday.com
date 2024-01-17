@@ -26,7 +26,6 @@ const App = () => {
 
   const handlePopupClose = () => {
     setShowPopup(false);
-    setSelectedEvent(null); // Reset selectedEvent when closing the popup
     setShowRegularForm(true);
   };
 

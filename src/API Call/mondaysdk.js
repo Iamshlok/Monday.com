@@ -3,7 +3,6 @@ import React, { Component } from 'react';
 
 const monday = mondaySdk();
 let board;
-let sessionToken;
 let columnsData = null;
 let curUserID;
 let curUserName;
