@@ -43,6 +43,7 @@ const App = () => {
           showRegularForm && <Form setShowRegularForm={setShowRegularForm} />
         )}
       </div>
+
       <div className="CalendarContainer">
         <MyCalendar
           events={calendarEvents}
@@ -52,6 +53,7 @@ const App = () => {
           selectedEvent={selectedEvent}
         />
       </div>
+
       <div>
         <ApiCall
           board={board}

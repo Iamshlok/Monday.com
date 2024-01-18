@@ -74,7 +74,6 @@ class Form extends Component {
       // Reset the name field when a new project is selected
       subitemsField: subitems,
       // Update state for the "Selected Project" column (text6)
-      text6: selectedItemId, // Assuming text6 is of type "text"
     }));
   };
 
@@ -97,9 +96,6 @@ class Form extends Component {
     }));
   
     // Update state for the "Selected Task" column (text66)
-    this.setState({
-      text66: selectedId,
-    });
   }
   
 
@@ -317,6 +313,7 @@ class Form extends Component {
 
     // Inside the render method
     return (
+
       <div className="form-container">
         <h2>Time Entry Form (User view)</h2>
         <h4>
@@ -329,6 +326,7 @@ class Form extends Component {
             </span>
           ))}
         </h4>
+
         <form onSubmit={this.handleSubmit}>
           <div className="form-row">
             {sortedColumns.map((column, index) => (
